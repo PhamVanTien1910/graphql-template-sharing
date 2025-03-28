@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  app:
+    container_name: graphql_template
+    build: .
+    ports:
+      - "5000:5000"
+    depends_on:
+      - db
+    env_file:
+      - .env
+    networks:
+      - my_network
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules 
+    command: ["npm", "run", "dev"]
+
+  db:
+    container_name: postgres_db
+    image: postgres:15
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: graphqldatabase
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    networks:
+      - my_network
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
+
+networks:
+  my_network:
